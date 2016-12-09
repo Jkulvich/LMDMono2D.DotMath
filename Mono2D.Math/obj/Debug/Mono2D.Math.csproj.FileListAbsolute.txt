@@ -1,0 +1,18 @@
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.exe.config
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.exe
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.pdb
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.csprojResolveAssemblyReference.cache
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.Properties.Resources.resources
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.csproj.GenerateResource.Cache
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.exe
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.pdb
+C:\Users\JK98V\Desktop\LMDNeuronNetLocalService\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.MForm.resources
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.exe.config
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.exe
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.pdb
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.exe
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\bin\Debug\Mono2D.Math.pdb
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.csprojResolveAssemblyReference.cache
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.Properties.Resources.resources
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.csproj.GenerateResource.Cache
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\LMDMono2D.MForm.resources

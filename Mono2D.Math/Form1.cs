@@ -23,11 +23,14 @@ namespace LMDMono2D
         #endregion
         #region components
         Timer timer = new Timer();
+        Timer FPSCounter = new Timer();
         #endregion
         #region variables
         Mouse mouse = new Mouse();
         Graphics gr;
         Bitmap bit;
+        int FPSnow = 0;
+        int FPS = 0;
         #endregion
 
         #region MFrom()
@@ -41,11 +44,23 @@ namespace LMDMono2D
             bit = new Bitmap(Screen.Width, Screen.Height);
             gr = Graphics.FromImage(bit);
 
-            timer.Interval = 33;
+            timer.Interval = 10;
             timer.Tick += timerTick;
             timer.Start();
 
+            FPSCounter.Interval = 1000;
+            FPSCounter.Tick += FPSCounterTick;
+            FPSCounter.Start();
+
             initLocalVariables();
+        }
+        #endregion
+
+        #region private void FPSCounterTick(object sender, EventArgs e)
+        private void FPSCounterTick(object sender, EventArgs e)
+        {
+            FPS = FPSnow;
+            FPSnow = 0;
         }
         #endregion
 
@@ -80,6 +95,9 @@ namespace LMDMono2D
         private void initLocalVariables()
         {
             //MessageBox.Show((DotMath.StraightAngle(new Dot(0f, 0f), new Dot(5f, 0f), new Dot(1f, 0f), new Dot(-1f, 0f)) * (180f / System.Math.PI)).ToString());
+            //MessageBox.Show((new Dot(5f, 3f) == new Dot(5f, 0f)).ToString());
+            //MessageBox.Show((1E+10).ToString());
+            //MessageBox.Show(new Dot(5, 6).ToString());
         }
         #endregion
         #region private void timerTick(object sender, EventArgs e)
@@ -87,7 +105,7 @@ namespace LMDMono2D
         {
             //gr.Clear(Color.Black);
             gr.SmoothingMode = SmoothingMode.HighQuality;
-            gr.FillRectangle(new SolidBrush(Color.FromArgb(50, 0, 0, 0)), new Rectangle(0, 0, Screen.Width, Screen.Height));
+            gr.FillRectangle(new SolidBrush(Color.FromArgb(10, 0, 0, 0)), new Rectangle(0, 0, Screen.Width, Screen.Height));
 
             // ---------- POLYGON INTERSECT
             /*if (LMDMono2D.DotMath.IsDotInPolygon(ds, new Dot(mouse.x, mouse.y)) == true)
@@ -109,15 +127,10 @@ namespace LMDMono2D
             gr.FillRectangle(new SolidBrush(Color.White), new RectangleF(C.X - 2, C.Y - 2, 4, 4));
             gr.FillRectangle(new SolidBrush(Color.White), new RectangleF(D.X - 2, D.Y - 2, 4, 4));
 
-            Dot[] AB = LMDMono2D.DotMath.GetLineByPoints(A, B, 400f);
-            Dot[] CD = LMDMono2D.DotMath.GetLineByPoints(C, D);
-
-            gr.DrawLine(new Pen(Color.White, 1), AB[0], AB[1]);
-            gr.DrawLine(new Pen(Color.White, 1), CD[0], CD[1]);
-
-            Dot inter = DotMath.StraightLineIntersect(A, B, C, D);
-            gr.DrawString(inter.ToString(), new Font("arial", 10), new SolidBrush(Color.White), new PointF(0, 0));
-            gr.FillRectangle(new SolidBrush(Color.Aqua), inter.X - 2, inter.Y - 2, 4, 4);*/
+            Pen p = new Pen(Color.White, 1);
+            if (DotMath.IsLineIntersect(A, B, C, D) == true) { p.Color = Color.Green; }
+            gr.DrawLine(p, A, B);
+            gr.DrawLine(p, C, D);*/
 
             // ---------- POLYGON ROTATE / SCALING and MOVING
             /*Dot cent = DotMath.PolygonCenter(ds);
@@ -141,7 +154,7 @@ namespace LMDMono2D
             ds = DotMath.Scale(ds, 1f / s);*/
 
             // ---------- DOT PROJECTION
-            Dot A = new Dot(40, 40);
+            /*Dot A = new Dot(40, 40);
             Dot B = new Dot(80, 50);
             Dot D = new Dot(mouse.x, mouse.y);
             Dot C = DotMath.DotStraightProjection(A, B, D);
@@ -161,9 +174,28 @@ namespace LMDMono2D
             Dot inter = C; // DotMath.StraightLineIntersect(A, B, C, D);
             gr.DrawString(inter.ToString(), new Font("arial", 10), new SolidBrush(Color.White), new PointF(0, 0));
             gr.DrawString("Distance " + DotMath.Distance(C, D), new Font("arial", 10), new SolidBrush(Color.White), new PointF(0, 18));
-            gr.FillRectangle(new SolidBrush(Color.Red), inter.X - 2, inter.Y - 2, 4, 4);
+            gr.FillRectangle(new SolidBrush(Color.Red), inter.X - 2, inter.Y - 2, 4, 4);*/
 
+
+            /*Dot A = new Dot(100f, 100f);
+            Dot B = new Dot(100f, 150f);
+
+            B -= A;
+            B.P += (float)((System.Environment.TickCount / 1000f) % (System.Math.PI * 2f));
+            B += A;
+
+            Dot C = new Dot(B) + new Dot(10f, 0f);
+            C -= B;
+            C.P = (B - A).P + 1.57f;
+            C.L = 10f;
+            C += B;
+
+            gr.DrawLine(new Pen(Color.White, 1), A, B);
+            gr.DrawLine(new Pen(Color.White, 1), B, C);*/
+
+            gr.DrawString(FPS.ToString(), new Font("Arial", 10), new SolidBrush(Color.White),new Point(380, 0));           
             Screen.Image = bit;
+            FPSnow++;
         }
         #endregion
     }

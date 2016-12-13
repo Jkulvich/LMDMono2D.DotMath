@@ -124,6 +124,7 @@ namespace LMDMono2D
         #endregion
 
         #region constructor
+        #region Dot(float x = 0, float y = 0, bool IsPolar = false)
         /// <summary>
         /// Initialize new dot and set coordinates from it (optional)
         /// </summary>
@@ -137,10 +138,20 @@ namespace LMDMono2D
                 this.L = x;
                 this.P = y;
                 return;
+                PolarSyncWithDecart = false;
             }
             this.X = x;
             this.Y = y;
+            DecartSyncWithPolar = false;
         }
+        #endregion
+        #region Dot(Dot d)
+        public Dot(Dot d)
+        {
+            this.X = d.X;
+            this.Y = d.Y;
+        }
+        #endregion
         #endregion
 
         #region overloading functions
@@ -351,11 +362,11 @@ namespace LMDMono2D
         /// <returns></returns>
         public static float[] GetPolarByDecart(float x, float y)
         {
-            float l = (float)System.Math.Sqrt(x * x + y * y) * (y < 0 ? -1f : 1f);
+            float l = (float)System.Math.Sqrt(x * x + y * y);
             float p = 0f;
             if (l != 0)
             {
-                p = (float)System.Math.Acos(x / l);
+                p = (float)System.Math.Acos(x / l) * (y < 0 ? -1f : 1f); ;
             }
             else
             {
@@ -385,9 +396,9 @@ namespace LMDMono2D
         /// </summary>
         private void SyncWithDecart()
         {
-            l = (float)System.Math.Sqrt(x * x + y * y) * (y < 0 ? -1f : 1f);
+            l = (float)System.Math.Sqrt(x * x + y * y);
             if (l == 0) { p = 0f; return; }
-            p = (float)System.Math.Acos(x / l);
+            p = (float)System.Math.Acos(x / l) * (y < 0 ? -1f : 1f);
         }
         #endregion
         #region private void SyncWithPolar()
@@ -513,7 +524,7 @@ namespace LMDMono2D
         /// <param name="C">First point of the second line</param>
         /// <param name="D">Second point of the second line</param>
         /// <returns></returns>
-        public static Dot StraightLineIntersect(Dot A, Dot B, Dot C, Dot D)
+        public static Dot StraightsIntersect(Dot A, Dot B, Dot C, Dot D)
         {
             float a = A.Y - B.Y;
             float b = B.X - A.X;
@@ -633,7 +644,26 @@ namespace LMDMono2D
             Dot Z = Dot.GetUnitVector(B - A);
             Z.P += (float)System.Math.PI / 2f;
             Z = Z + C;
-            return StraightLineIntersect(A, B, C, Z);
+            return StraightsIntersect(A, B, C, Z);
+        }
+        #endregion
+
+        #region public static bool IsLineIntersect(Dot A, Dot B, Dot C, Dot D)
+        /// <summary>
+        /// Returns true if lines is intersected
+        /// </summary>
+        /// <param name="A">First point of first line</param>
+        /// <param name="B">Second point of first line</param>
+        /// <param name="C">First point of second line</param>
+        /// <param name="D">Second point of second line</param>
+        /// <returns></returns>
+        public static bool IsLineIntersect(Dot A, Dot B, Dot C, Dot D)
+        {
+            float v1 = (D.X - C.X) * (A.Y - C.Y) - (D.Y - C.Y) * (A.X - C.X);
+            float v2 = (D.X - C.X) * (B.Y - C.Y) - (D.Y - C.Y) * (B.X - C.X);
+            float v3 = (B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X);
+            float v4 = (B.X - A.X) * (D.Y - A.Y) - (B.Y - A.Y) * (D.X - A.X);
+            return (v1 * v2 <= 0) && (v3 * v4 <= 0);
         }
         #endregion
 

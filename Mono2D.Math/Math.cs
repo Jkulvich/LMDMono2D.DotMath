@@ -10,12 +10,12 @@ It's my MATH library fro my future games and other programs :)
 ... I'm thinking what write else... )))
 */
 
-#define SystemDrawing_PointConverter // allow implicit converting to Point (with round) and PointF and back
+#define SystemDrawing_Compatibility // allow implicit converting to Point (with round) and PointF and back
 
 using System;
 
 #region compatibility with libraries and data types
-#if (SystemDrawing_PointConverter) 
+#if (SystemDrawing_Compatibility) 
 using System.Drawing;
 #endif
 #endregion
@@ -28,42 +28,157 @@ namespace LMDMono2D
     /// </summary>
     public class Dot
     {
-        public float x = 0f;
-        public float y = 0f;
-
-        #region constructor
-        public Dot(float x = 0, float y = 0)
+        private bool PolarSyncWithDecart = true;
+        private bool DecartSyncWithPolar = true;
+        #region get/set float X
+        private float x = 0f;
+        /// <summary>
+        /// The X coorinates from decart
+        /// </summary>
+        public float X
         {
-            this.x = x;
-            this.y = y;
+            get
+            {
+                if (PolarSyncWithDecart == false)
+                {
+                    PolarSyncWithDecart = true;
+                    SyncWithPolar();
+                }
+                return x;
+            }
+            set
+            {
+                x = value;
+                DecartSyncWithPolar = false;
+            }
+        }
+        #endregion
+        #region get/set float Y
+        private float y = 0f;
+        /// <summary>
+        /// The coordinate Y from decart
+        /// </summary>
+        public float Y
+        {
+            get
+            {
+                if (PolarSyncWithDecart == false)
+                {
+                    PolarSyncWithDecart = true;
+                    SyncWithPolar();
+                }
+                return y;
+            }
+            set
+            {
+                y = value;
+                DecartSyncWithPolar = false;
+            }
+        }
+        #endregion
+        #region get/set float L
+        private float l = 0f;
+        /// <summary>
+        /// The L (length\distance) coordinate from polar
+        /// </summary>
+        public float L
+        {
+            get
+            {
+                if (DecartSyncWithPolar == false)
+                {
+                    DecartSyncWithPolar = true;
+                    SyncWithDecart();
+                }
+                return l;
+            }
+            set
+            {
+                l = value;
+                PolarSyncWithDecart = false;
+            }
+        }
+        #endregion
+        #region get/set float P
+        private float p = 0f;
+        /// <summary>
+        /// The P (angle) coordinate from polar
+        /// </summary>
+        public float P
+        {
+            get
+            {
+                if (DecartSyncWithPolar == false)
+                {
+                    DecartSyncWithPolar = true;
+                    SyncWithDecart();
+                }
+                return p;
+            }
+            set
+            {
+                p = value;
+                PolarSyncWithDecart = false;
+            }
         }
         #endregion
 
+        #region constructor
+        /// <summary>
+        /// Initialize new dot and set coordinates from it (optional)
+        /// </summary>
+        /// <param name="x">X coordinate in decart or L in polar</param>
+        /// <param name="y">Y coordinate in decart or P in polar</param>
+        /// <param name="IsPolar">Set coordinate how polar?</param>
+        public Dot(float x = 0, float y = 0, bool IsPolar = false)
+        {
+            if (IsPolar == true)
+            {
+                this.L = x;
+                this.P = y;
+                return;
+            }
+            this.X = x;
+            this.Y = y;
+        }
+        #endregion
+
+        #region overloading functions
         #region public override string ToString()
         public override string ToString()
         {
-            return "Dot(" + x.ToString() + ", " + y.ToString() + ")";
+            return "Dot(" + X.ToString() + ", " + Y.ToString() + ")";
         }
         #endregion
-
+        #region public override string ToString(bool polar)
+        public string ToString(bool polar)
+        {
+            if (polar == true)
+            {
+                return "Dot(" + L.ToString() + ", " + P.ToString() + ")";
+            }
+            return "Dot(" + X.ToString() + ", " + Y.ToString() + ")";
+        }
+        #endregion
+        #endregion
         #region overloading operators
         #region +
         #region Dot = Dot + Dot
         public static Dot operator +(Dot d1, Dot d2)
         {
-            return new Dot(d1.x + d2.x, d1.y + d2.y);
+            return new Dot(d1.X + d2.X, d1.Y + d2.Y);
         }
         #endregion
         #region Dot = Dot + float
         public static Dot operator +(Dot d1, float f)
         {
-            return new Dot(d1.x + f, d1.y + f);
+            return new Dot(d1.X + f, d1.Y + f);
         }
         #endregion
         #region Dot = float + Dot
         public static Dot operator +(float f, Dot d1)
         {
-            return new Dot(d1.x + f, d1.y + f);
+            return new Dot(d1.X + f, d1.Y + f);
         }
         #endregion
         #endregion
@@ -71,19 +186,19 @@ namespace LMDMono2D
         #region Dot = Dot + Dot
         public static Dot operator -(Dot d1, Dot d2)
         {
-            return new Dot(d1.x - d2.x, d1.y - d2.y);
+            return new Dot(d1.X - d2.X, d1.Y - d2.Y);
         }
         #endregion
         #region Dot = Dot - float
         public static Dot operator -(Dot d1, float f)
         {
-            return new Dot(d1.x - f, d1.y - f);
+            return new Dot(d1.X - f, d1.Y - f);
         }
         #endregion
         #region Dot = float - Dot
         public static Dot operator -(float f, Dot d1)
         {
-            return new Dot(f - d1.x, f - d1.y);
+            return new Dot(f - d1.X, f - d1.Y);
         }
         #endregion
         #endregion
@@ -91,19 +206,19 @@ namespace LMDMono2D
         #region Dot = Dot * Dot
         public static Dot operator *(Dot d1, Dot d2)
         {
-            return new Dot(d1.x * d2.x, d1.y * d2.y);
+            return new Dot(d1.X * d2.X, d1.Y * d2.Y);
         }
         #endregion
         #region Dot = Dot * float
         public static Dot operator *(Dot d1, float f)
         {
-            return new Dot(d1.x * f, d1.y * f);
+            return new Dot(d1.X * f, d1.Y * f);
         }
         #endregion
         #region Dot = float * Dot
         public static Dot operator *(float f, Dot d1)
         {
-            return new Dot(d1.x * f, d1.y * f);
+            return new Dot(d1.X * f, d1.Y * f);
         }
         #endregion
         #endregion
@@ -111,35 +226,36 @@ namespace LMDMono2D
         #region Dot = Dot / Dot
         public static Dot operator /(Dot d1, Dot d2)
         {
-            return new Dot(d1.x / d2.x, d1.y / d2.y);
+            return new Dot(d1.X / d2.X, d1.Y / d2.Y);
         }
         #endregion
         #region Dot = Dot / float
         public static Dot operator /(Dot d1, float f)
         {
-            return new Dot(d1.x / f, d1.y / f);
+            return new Dot(d1.X / f, d1.Y / f);
         }
         #endregion
         #region Dot = float / Dot
         public static Dot operator /(float f, Dot d1)
         {
-            return new Dot(f / d1.x, f / d1.y);
+            return new Dot(f / d1.X, f / d1.Y);
         }
         #endregion
         #endregion
-        #region Types converter 
-        #region SystemDrawing_PointConverter
-#if (SystemDrawing_PointConverter)
+        #endregion
+        #region Types converter (compatibility)
+        #region SystemDrawing_Compatibility
+#if (SystemDrawing_Compatibility)
         #region implicit from Dot to PointF
         public static implicit operator PointF(Dot d)
         {
-            return new PointF(d.x, d.y);
+            return new PointF(d.X, d.Y);
         }
         #endregion
         #region implicit from Dot to Point
         public static implicit operator Point(Dot d)
         {
-            return new Point((int)System.Math.Round(d.x), (int)System.Math.Round(d.y));
+            return new Point((int)System.Math.Round(d.X), (int)System.Math.Round(d.Y));
         }
         #endregion
         #region implicit from PointF to Dot
@@ -201,6 +317,88 @@ namespace LMDMono2D
 #endif
         #endregion
         #endregion
+
+        #region public Dot GetUnitVector()
+        /// <summary>
+        /// Returns normalize or unit vector of this.
+        /// </summary>
+        /// <returns></returns>
+        public Dot GetUnitVector()
+        {
+            float l = DotMath.Distance(this, new Dot(0, 0));
+            return new Dot(this.X / l, this.Y / l);
+        }
+        #endregion
+        #region public static Dot GetUnitVector(Dot d)
+        /// <summary>
+        /// Returns normalize or unit vector by "d"
+        /// </summary>
+        /// <param name="d">Dot vector</param>
+        /// <returns></returns>
+        public static Dot GetUnitVector(Dot d)
+        {
+            float l = DotMath.Distance(d, new Dot(0, 0));
+            return new Dot(d.X / l, d.Y / l);
+        }
+        #endregion
+
+        #region public static float[] GetPolarByDecart(float x, float y)
+        /// <summary>
+        /// Retrun linear array from L (length) and P (angle) by x and y
+        /// </summary>
+        /// <param name="x">X coordinate in decart</param>
+        /// <param name="y">Y coordinate in decart</param>
+        /// <returns></returns>
+        public static float[] GetPolarByDecart(float x, float y)
+        {
+            float l = (float)System.Math.Sqrt(x * x + y * y) * (y < 0 ? -1f : 1f);
+            float p = 0f;
+            if (l != 0)
+            {
+                p = (float)System.Math.Acos(x / l);
+            }
+            else
+            {
+                p = 0f;
+            }
+            return new float[] { l, p };
+        }
+        #endregion
+        #region public static float[] GetDecartByPolar(float l, float p)
+        /// <summary>
+        /// Returns linear array from X and Y by polar
+        /// </summary>
+        /// <param name="l">length</param>
+        /// <param name="p">angle</param>
+        /// <returns></returns>
+        public static float[] GetDecartByPolar(float l, float p)
+        {
+            float x = (float)System.Math.Cos(p) * l;
+            float y = (float)System.Math.Sin(p) * l;
+            return new float[] { x, y };
+        }
+        #endregion
+
+        #region private void SyncWithDecart()
+        /// <summary>
+        /// Convert decart coordinates to polar from this point
+        /// </summary>
+        private void SyncWithDecart()
+        {
+            l = (float)System.Math.Sqrt(x * x + y * y) * (y < 0 ? -1f : 1f);
+            if (l == 0) { p = 0f; return; }
+            p = (float)System.Math.Acos(x / l);
+        }
+        #endregion
+        #region private void SyncWithPolar()
+        /// <summary>
+        /// Convert polar coordinates to decart from this point
+        /// </summary>
+        private void SyncWithPolar()
+        {
+            x = (float)System.Math.Cos(p) * l;
+            y = (float)System.Math.Sin(p) * l;
+        }
         #endregion
     }
     #endregion
@@ -217,8 +415,8 @@ namespace LMDMono2D
         public static float Distance(Dot d1, Dot d2)
         {
             // for speed
-            float xcord = (d1.x - d2.x);
-            float ycord = (d1.y - d2.y);
+            float xcord = (d1.X - d2.X);
+            float ycord = (d1.Y - d2.Y);
             return (float)System.Math.Sqrt(xcord * xcord + ycord * ycord);
         }
         #endregion
@@ -276,7 +474,7 @@ namespace LMDMono2D
             float t1a = TriangleArea(d1, d2, p);
             float t2a = TriangleArea(d2, d3, p);
             float t3a = TriangleArea(d3, d1, p);
-            if (fta + 1 >= t1a + t2a + t3a) // костыль, хз почему +1
+            if (fta + 1f >= t1a + t2a + t3a) // костыль, т.к. иногда сумма площадей может слегка превысить общую площадь
             {
                 return true;
             }
@@ -306,16 +504,24 @@ namespace LMDMono2D
             return false;
         }
         #endregion
-        #region public static Dot StraightLineIntersect(Dot p11, Dot p12, Dot p21, Dot p22)
+        #region public static Dot StraightsIntersect(Dot p11, Dot p12, Dot p21, Dot p22)
+        /// <summary>
+        /// Returns point which is intersect point of 2 straight
+        /// </summary>
+        /// <param name="A">First point of the first line</param>
+        /// <param name="B">Second point of the first line</param>
+        /// <param name="C">First point of the second line</param>
+        /// <param name="D">Second point of the second line</param>
+        /// <returns></returns>
         public static Dot StraightLineIntersect(Dot A, Dot B, Dot C, Dot D)
         {
-            float a = A.x - B.y;
-            float b = B.x - A.x;
-            float c = A.x * B.y - B.x * A.y;
+            float a = A.Y - B.Y;
+            float b = B.X - A.X;
+            float c = A.X * B.Y - B.X * A.Y;
 
-            float d = C.x - D.y;
-            float e = D.x - C.x;
-            float f = C.x * D.y - D.x * C.y;
+            float d = C.Y - D.Y;
+            float e = D.X - C.X;
+            float f = C.X * D.Y - D.X * C.Y;
 
             if (a != 0 && a * e - d * b != 0)
             {
@@ -325,6 +531,125 @@ namespace LMDMono2D
                 return new Dot(x, y);
             }
             return new Dot(0f, 0f);
+        }
+        #endregion
+
+        #region public static Dot[] Translate(Dot[] ds, float x, float y)
+        /// <summary>
+        /// Move all dots
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="x">Translate by X</param>
+        /// <param name="y">Translate by Y</param>
+        /// <returns></returns>
+        public static Dot[] Translate(Dot[] ds, float x, float y)
+        {
+            Dot[] nds = new Dot[ds.Length];
+            for (int i = 0; i < ds.Length; i++)
+            {
+                nds[i] = new Dot();
+                nds[i].X = ds[i].X + x;
+                nds[i].Y = ds[i].Y + y;
+            }
+            return nds;
+        }
+        #endregion
+        #region public static Dot[] Rotate(Dot[] ds, float p)
+        /// <summary>
+        /// Rotate all dots in array (center 0, 0)
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="p">Rotate angle</param>
+        /// <returns></returns>
+        public static Dot[] Rotate(Dot[] ds, float p)
+        {
+            Dot[] nds = new Dot[ds.Length];
+            for (int i = 0; i < ds.Length; i++)
+            {
+                nds[i] = new Dot();
+                nds[i].L = ds[i].L;
+                nds[i].P = ds[i].P + p;
+            }
+            return nds;
+        }
+        #endregion
+        #region public static Dot PolygonCenter(Dot[] ds)
+        /// <summary>
+        /// Returns dot - its a center of polygon
+        /// </summary>
+        /// <param name="ds">Array of polygons</param>
+        /// <returns></returns>
+        public static Dot PolygonCenter(Dot[] ds)
+        {
+            Dot center = new Dot();
+            for (int i = 0; i < ds.Length; i++)
+            {
+                center.X += ds[i].X;
+                center.Y += ds[i].Y;
+            }
+            center.X /= (float)ds.Length;
+            center.Y /= (float)ds.Length;
+            return center;
+        }
+        #endregion
+        #region public static Dot[] Scale(Dot[] ds, float s)
+        public static Dot[] Scale(Dot[] ds, float s)
+        {
+            Dot[] nds = new Dot[ds.Length];
+            for (int i = 0; i < ds.Length; i++)
+            {
+                nds[i] = new Dot(ds[i].L * s, ds[i].P, true);
+            }
+            return nds;
+        }
+        #endregion
+
+        #region public static float StraightAngle(Dot a, Dot b, Dot c, Dot d)
+        /// <summary>
+        /// Returns straight angle
+        /// </summary>
+        /// <param name="a">First point of the first line</param>
+        /// <param name="b">Second point of the first line</param>
+        /// <param name="c">First point of the second line</param>
+        /// <param name="d">Second point of the second line</param>
+        /// <returns></returns>
+        public static float StraightAngle(Dot a, Dot b, Dot c, Dot d)
+        {
+            float bottom = (float)(System.Math.Sqrt((a.Y - b.Y) * (a.Y - b.Y) + (b.X - a.X) * (b.X - a.X)) * System.Math.Sqrt((c.Y - d.Y) * (c.Y - d.Y) + (d.X - c.X) * (d.X - c.X)));
+            if (bottom == 0) { return 0f; }
+            return (float)System.Math.Acos(((a.Y - b.Y)*(c.Y - d.Y) + (b.X - a.X)*(d.X - c.X)) / bottom);
+        }
+        #endregion
+        #region public static Dot DotStraightProjection(Dot A, Dot B, Dot C)
+        /// <summary>
+        /// Returns projection C dot to straight AB
+        /// </summary>
+        /// <param name="A">First point of straight</param>
+        /// <param name="B">Second point of straight</param>
+        /// <param name="C">Other dot</param>
+        /// <returns></returns>
+        public static Dot DotStraightProjection(Dot A, Dot B, Dot C)
+        {
+            Dot Z = Dot.GetUnitVector(B - A);
+            Z.P += (float)System.Math.PI / 2f;
+            Z = Z + C;
+            return StraightLineIntersect(A, B, C, Z);
+        }
+        #endregion
+
+        // I delete it later... don't use, please.
+        #region public static Dot[] GetLineByPoints(Dot A, Dot B, float mult = float.MaxValue)
+        /// <summary>
+        /// Returns 2 dots which is max line point.
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static Dot[] GetLineByPoints(Dot A, Dot B, float mult = 1E+6f)
+        {
+            Dot C = A - Dot.GetUnitVector(B - A) * mult;
+            Dot D = B + Dot.GetUnitVector(B - A) * mult;
+            return new Dot[] { C, D };
         }
         #endregion
     }

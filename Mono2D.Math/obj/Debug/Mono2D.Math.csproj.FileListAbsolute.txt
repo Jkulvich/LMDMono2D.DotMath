@@ -16,3 +16,12 @@ Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\
 Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.Properties.Resources.resources
 Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\Mono2D.Math.csproj.GenerateResource.Cache
 Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\Mono2D.Math\obj\Debug\LMDMono2D.MForm.resources
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\bin\Debug\Mono2D.Math.exe.config
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\Mono2D.Math.exe
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\Mono2D.Math.pdb
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\bin\Debug\Mono2D.Math.exe
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\bin\Debug\Mono2D.Math.pdb
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\Mono2D.Math.csprojResolveAssemblyReference.cache
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\LMDMono2D.MForm.resources
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\Mono2D.Math.Properties.Resources.resources
+Z:\Projects\ActiveProjects\LMDMath (Mono2D project)\Mono2D.Math\LMDMono2D.DotMath\Mono2D.Math\obj\Debug\Mono2D.Math.csproj.GenerateResource.Cache

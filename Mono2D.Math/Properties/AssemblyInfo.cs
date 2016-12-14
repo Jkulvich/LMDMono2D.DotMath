@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Mono2D.Math")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mono2D.DotMath")]
+[assembly: AssemblyDescription("The demonstration application for DotMath V1.0")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Mono2D.Math")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("LIMIDE DEV")]
+[assembly: AssemblyProduct("Mono2D.DotMath LIMIDE DEV 2016")]
+[assembly: AssemblyCopyright("Copyright LIMIDE DEV ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

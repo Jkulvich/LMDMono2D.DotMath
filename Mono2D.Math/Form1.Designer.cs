@@ -48,8 +48,11 @@
             this.ClientSize = new System.Drawing.Size(400, 300);
             this.Controls.Add(this.Screen);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "MForm";
-            this.Text = "Mono2D.Math";
+            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Mono2D.DotMath";
             ((System.ComponentModel.ISupportInitialize)(this.Screen)).EndInit();
             this.ResumeLayout(false);
 

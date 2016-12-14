@@ -89,24 +89,22 @@ namespace LMDMono2D
         #endregion
 
         #region local variables
-        LMDMono2D.Dot[] ds = new Dot[] { new Dot(40, 40), new Dot(80, 40), new Dot(80, 80), new Dot(50, 90), new Dot(30, 20), };
+        LMDMono2D.Dot[] ds = new Dot[] { new Dot(40, 40), new Dot(120, 40), new Dot(80, 80), new Dot(70, 70), new Dot(50, 90), new Dot(30, 20), };
         #endregion
         #region private void initLocalVariables()
         private void initLocalVariables()
         {
-            //MessageBox.Show((DotMath.StraightAngle(new Dot(0f, 0f), new Dot(5f, 0f), new Dot(1f, 0f), new Dot(-1f, 0f)) * (180f / System.Math.PI)).ToString());
-            //MessageBox.Show((new Dot(5f, 3f) == new Dot(5f, 0f)).ToString());
-            //MessageBox.Show((1E+10).ToString());
-            //MessageBox.Show(new Dot(5, 6).ToString());
+
         }
         #endregion
         #region private void timerTick(object sender, EventArgs e)
         private void timerTick(object sender, EventArgs e)
         {
-            //gr.Clear(Color.Black);
             gr.SmoothingMode = SmoothingMode.HighQuality;
-            gr.FillRectangle(new SolidBrush(Color.FromArgb(10, 0, 0, 0)), new Rectangle(0, 0, Screen.Width, Screen.Height));
+            gr.FillRectangle(new SolidBrush(Color.FromArgb(20, 0, 0, 0)), new Rectangle(0, 0, Screen.Width, Screen.Height));
+            Dot M = new Dot(mouse.x, mouse.y);
 
+            #region old tests
             // ---------- POLYGON INTERSECT
             /*if (LMDMono2D.DotMath.IsDotInPolygon(ds, new Dot(mouse.x, mouse.y)) == true)
             {
@@ -192,6 +190,42 @@ namespace LMDMono2D
 
             gr.DrawLine(new Pen(Color.White, 1), A, B);
             gr.DrawLine(new Pen(Color.White, 1), B, C);*/
+            #endregion
+
+            Dot[] ds2;
+            ds2 = DotMath.RotateFrom(ds, DotMath.PolygonCenter(ds), (float)System.Environment.TickCount / 5000f);
+            ds2 = DotMath.Translate(ds2, new Dot(100f, 80f));
+            ds2 = DotMath.ScaleFrom(ds2, DotMath.PolygonCenter(ds2), 2f);
+            if (DotMath.IsDotInPolygon(ds2, M))
+            {
+                gr.FillPolygon(new SolidBrush(Color.White), Dot.ToPoints(ds2));
+            }
+            gr.DrawPolygon(new Pen(Color.White, 1), Dot.ToPoints(ds2));
+
+            Pen p = new Pen(Color.White, 1);
+            Dot X = DotMath.DotClosestSegments(ds2, M);
+
+            Dot NV = X - M;
+            NV = NV.GetUnitVector();
+            NV.P += (float)System.Math.PI / 2f;
+            NV.L *= 20f;
+
+            Dot OX = new Dot(20f, 0f);
+
+            gr.DrawLine(new Pen(Color.White, 1), X, M);
+            gr.DrawLine(new Pen(Color.White, 1), M - NV, M + NV);
+            gr.DrawLine(new Pen(Color.White, 1), M - OX, M + OX);
+            float sangle = DotMath.StraightsAngle(new Dot(), NV, new Dot(), OX);
+            gr.DrawArc(new Pen(Color.White, 1), new RectangleF(M.X - 20f, M.Y - 20f, 40f, 40f), 0f, (float)(System.Math.PI - (sangle * (360f / (System.Math.PI * 2f)))));
+            if (X != null)
+            {
+                gr.FillEllipse(new SolidBrush(Color.Black), X.X - 3, X.Y - 3, 6, 6);
+                gr.DrawEllipse(new Pen(Color.White, 1), X.X - 3, X.Y - 3, 6, 6);
+            }
+            gr.DrawString("Angle: " + (sangle * (360f / (System.Math.PI * 2f))).ToString(), new Font("Arial", 10), new SolidBrush(Color.White), new Point(0, 260));
+            gr.DrawString("Distance: " + DotMath.Distance(X, M).ToString(), new Font("Arial", 10), new SolidBrush(Color.White), new Point(0, 280));
+
+            gr.DrawString("LMDMono2D.DotMath V1.0 Release", new Font("Arial", 10), new SolidBrush(Color.White), new Point(180, 280));
 
             gr.DrawString(FPS.ToString(), new Font("Arial", 10), new SolidBrush(Color.White),new Point(380, 0));           
             Screen.Image = bit;

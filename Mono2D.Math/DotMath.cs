@@ -5,11 +5,6 @@
 // https://vk.com/jkulvich
 // https://twitter.com/jkulvich
 
-/*
-It's my MATH library fro my future games and other programs :)
-... I'm thinking what write else... )))
-*/
-
 #define SystemDrawing_Compatibility // allow implicit converting to Point (with round) and PointF and back
 
 using System;
@@ -194,7 +189,13 @@ namespace LMDMono2D
         #endregion
         #endregion
         #region -
-        #region Dot = Dot + Dot
+        #region Dot = -Dot
+        public static Dot operator -(Dot d1)
+        {
+            return new Dot(-d1.X, -d1.Y);
+        }
+        #endregion
+        #region Dot = Dot - Dot
         public static Dot operator -(Dot d1, Dot d2)
         {
             return new Dot(d1.X - d2.X, d1.Y - d2.Y);
@@ -545,7 +546,7 @@ namespace LMDMono2D
         }
         #endregion
 
-        #region public static Dot[] Translate(Dot[] ds, float x, float y)
+        #region public static Dot[] Translate(Dot[] ds, Dot offset)
         /// <summary>
         /// Move all dots
         /// </summary>
@@ -553,14 +554,14 @@ namespace LMDMono2D
         /// <param name="x">Translate by X</param>
         /// <param name="y">Translate by Y</param>
         /// <returns></returns>
-        public static Dot[] Translate(Dot[] ds, float x, float y)
+        public static Dot[] Translate(Dot[] ds, Dot offset)
         {
             Dot[] nds = new Dot[ds.Length];
             for (int i = 0; i < ds.Length; i++)
             {
                 nds[i] = new Dot();
-                nds[i].X = ds[i].X + x;
-                nds[i].Y = ds[i].Y + y;
+                nds[i].X = ds[i].X + offset.X;
+                nds[i].Y = ds[i].Y + offset.Y;
             }
             return nds;
         }
@@ -584,6 +585,19 @@ namespace LMDMono2D
             return nds;
         }
         #endregion
+        #region public static Dot[] RotateFrom(Dot[] ds, Dot center, float p)
+        /// <summary>
+        /// Rotate all dots in array from center
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="center">All dots will rotated use this point how center</param>
+        /// <param name="p">Rotate angle</param>
+        /// <returns></returns>
+        public static Dot[] RotateFrom(Dot[] ds, Dot center, float p)
+        {
+            return Translate(Rotate(Translate(ds, -center), p), center);
+        }
+        #endregion
         #region public static Dot PolygonCenter(Dot[] ds)
         /// <summary>
         /// Returns dot - its a center of polygon
@@ -604,6 +618,12 @@ namespace LMDMono2D
         }
         #endregion
         #region public static Dot[] Scale(Dot[] ds, float s)
+        /// <summary>
+        /// Multiples coordinates all dots from coefficient (center 0, 0)
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="s">Scale coefficient</param>
+        /// <returns></returns>
         public static Dot[] Scale(Dot[] ds, float s)
         {
             Dot[] nds = new Dot[ds.Length];
@@ -614,8 +634,21 @@ namespace LMDMono2D
             return nds;
         }
         #endregion
+        #region public static Dot[] ScaleFrom(Dot[] ds, Dot center, float s)
+        /// <summary>
+        /// Multiples coordinates all dots from coefficient from center
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="center">Center from scale all dots</param>
+        /// <param name="s">Scale coefficient</param>
+        /// <returns></returns>
+        public static Dot[] ScaleFrom(Dot[] ds, Dot center, float s)
+        {
+            return Translate(Scale(Translate(ds, -center), s), center);
+        }
+        #endregion
 
-        #region public static float StraightAngle(Dot a, Dot b, Dot c, Dot d)
+        #region public static float StraightsAngle(Dot a, Dot b, Dot c, Dot d)
         /// <summary>
         /// Returns straight angle
         /// </summary>
@@ -624,7 +657,7 @@ namespace LMDMono2D
         /// <param name="c">First point of the second line</param>
         /// <param name="d">Second point of the second line</param>
         /// <returns></returns>
-        public static float StraightAngle(Dot a, Dot b, Dot c, Dot d)
+        public static float StraightsAngle(Dot a, Dot b, Dot c, Dot d)
         {
             float bottom = (float)(System.Math.Sqrt((a.Y - b.Y) * (a.Y - b.Y) + (b.X - a.X) * (b.X - a.X)) * System.Math.Sqrt((c.Y - d.Y) * (c.Y - d.Y) + (d.X - c.X) * (d.X - c.X)));
             if (bottom == 0) { return 0f; }
@@ -648,7 +681,7 @@ namespace LMDMono2D
         }
         #endregion
 
-        #region public static bool IsLineIntersect(Dot A, Dot B, Dot C, Dot D)
+        #region public static bool IsLinesIntersect(Dot A, Dot B, Dot C, Dot D)
         /// <summary>
         /// Returns true if lines is intersected
         /// </summary>
@@ -657,13 +690,45 @@ namespace LMDMono2D
         /// <param name="C">First point of second line</param>
         /// <param name="D">Second point of second line</param>
         /// <returns></returns>
-        public static bool IsLineIntersect(Dot A, Dot B, Dot C, Dot D)
+        public static bool IsLinesIntersect(Dot A, Dot B, Dot C, Dot D)
         {
             float v1 = (D.X - C.X) * (A.Y - C.Y) - (D.Y - C.Y) * (A.X - C.X);
             float v2 = (D.X - C.X) * (B.Y - C.Y) - (D.Y - C.Y) * (B.X - C.X);
             float v3 = (B.X - A.X) * (C.Y - A.Y) - (B.Y - A.Y) * (C.X - A.X);
             float v4 = (B.X - A.X) * (D.Y - A.Y) - (B.Y - A.Y) * (D.X - A.X);
             return (v1 * v2 <= 0) && (v3 * v4 <= 0);
+        }
+        #endregion
+        #region public static Dot LineIntersect(Dot A, Dot B, Dot C, Dot D)
+        public static Dot LinesIntersect(Dot A, Dot B, Dot C, Dot D)
+        {
+            Dot E = new Dot(System.Math.Min(A.X, B.X), System.Math.Min(A.Y, B.Y));
+            Dot F = new Dot(System.Math.Max(A.X, B.X), System.Math.Max(A.Y, B.Y));
+            Dot G = new Dot(System.Math.Min(C.X, D.X), System.Math.Min(C.Y, D.Y));
+            Dot H = new Dot(System.Math.Max(C.X, D.X), System.Math.Max(C.Y, D.Y));
+            Dot X = StraightsIntersect(A, B, C, D);
+            if (X.X >= E.X && X.Y >= E.Y && X.X <= F.X && X.Y <= F.Y && X.X >= G.X && X.Y >= G.Y && X.X <= H.X && X.Y <= H.Y)
+            {
+                return X;
+            }
+            return null;
+        }
+        #endregion
+
+        #region public static Dot DotClosestSegment(Dot A, Dot B, Dot C)
+        public static Dot DotClosestSegment(Dot A, Dot B, Dot C)
+        {
+            Dot X = DotStraightProjection(A, B, C);
+            Dot E = new Dot(System.Math.Min(A.X, B.X), System.Math.Min(A.Y, B.Y));
+            Dot F = new Dot(System.Math.Max(A.X, B.X), System.Math.Max(A.Y, B.Y));
+            if (X.X >= E.X && X.Y >= E.Y && X.X <= F.X && X.Y <= F.Y)
+            {
+                return X;
+            }
+            float ADist = Distance(A, X);
+            float BDist = Distance(B, X);
+            if (ADist < BDist) { return A; }
+            return B;
         }
         #endregion
 
@@ -680,6 +745,35 @@ namespace LMDMono2D
             Dot C = A - Dot.GetUnitVector(B - A) * mult;
             Dot D = B + Dot.GetUnitVector(B - A) * mult;
             return new Dot[] { C, D };
+        }
+        #endregion
+
+        #region public static Dot DotClosestSegments(Dot[] ds, Dot D)
+        /// <summary>
+        /// Find maximum closestest dot who is line dot from array
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="D">You dot</param>
+        /// <returns></returns>
+        public static Dot DotClosestSegments(Dot[] ds, Dot D)
+        {
+            if (ds.Length >= 2)
+            {
+                Dot X = DotMath.DotClosestSegment(ds[ds.Length - 1], ds[0], D);
+                float minDist = DotMath.Distance(D, X);
+                for (int i = 0; i < ds.Length - 1; i++)
+                {
+                    Dot Y = DotMath.DotClosestSegment(ds[i], ds[i + 1], D);
+                    float dist = DotMath.Distance(Y, D);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        X = Y;
+                    }
+                }
+                return X;
+            }
+            return null;
         }
         #endregion
     }

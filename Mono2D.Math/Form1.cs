@@ -203,7 +203,7 @@ namespace LMDMono2D
             gr.DrawPolygon(new Pen(Color.White, 1), Dot.ToPoints(ds2));
 
             Pen p = new Pen(Color.White, 1);
-            Dot X = DotMath.DotClosestSegments(ds2, M);
+            Dot X = DotMath.DotClosestPolygon(ds2, M);
 
             Dot NV = X - M;
             NV = NV.GetUnitVector();
@@ -225,7 +225,24 @@ namespace LMDMono2D
             gr.DrawString("Angle: " + (sangle * (360f / (System.Math.PI * 2f))).ToString(), new Font("Arial", 10), new SolidBrush(Color.White), new Point(0, 260));
             gr.DrawString("Distance: " + DotMath.Distance(X, M).ToString(), new Font("Arial", 10), new SolidBrush(Color.White), new Point(0, 280));
 
-            gr.DrawString("LMDMono2D.DotMath V1.0 Release", new Font("Arial", 10), new SolidBrush(Color.White), new Point(180, 280));
+            gr.DrawString("LMDMono2D.DotMath V1.1 Release", new Font("Arial", 10), new SolidBrush(Color.White), new Point(180, 280));
+
+            /*Pen pOrange = new Pen(Color.Orange, 2);
+            Pen pAqua = new Pen(Color.Aqua, 2);
+            Pen pWhite = new Pen(Color.White, 2);
+            SolidBrush sbBlack = new SolidBrush(Color.Black);
+            SolidBrush sbWhite = new SolidBrush(Color.White);
+            SolidBrush sbOrange = new SolidBrush(Color.Orange);
+            SolidBrush sbAqua = new SolidBrush(Color.Aqua);
+
+            Dot X = DotMath.DotClosestPolygon(ds, M);
+
+            gr.DrawLines(pOrange, Dot.ToPoints(ds));
+            gr.DrawLine(pOrange, ds[ds.Length - 1], ds[0]);
+            gr.DrawLine(pAqua, X, M);
+
+            gr.FillEllipse(sbBlack, X.X - 4, X.Y - 4, 8, 8);
+            gr.DrawEllipse(pAqua, X.X - 4, X.Y - 4, 8, 8);*/
 
             gr.DrawString(FPS.ToString(), new Font("Arial", 10), new SolidBrush(Color.White),new Point(380, 0));           
             Screen.Image = bit;

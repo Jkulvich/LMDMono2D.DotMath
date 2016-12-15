@@ -45,3 +45,10 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# All files starts with dot (exception .gitignore)
+.*
+!.gitignore
+ComplexityMathematicalOperations.xlsx
+Documentation_RU.docx
+Futures.txt

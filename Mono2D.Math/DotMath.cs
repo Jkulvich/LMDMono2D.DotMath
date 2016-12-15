@@ -5,6 +5,8 @@
 // https://vk.com/jkulvich
 // https://twitter.com/jkulvich
 
+// Version 1.1 Release
+
 #define SystemDrawing_Compatibility // allow implicit converting to Point (with round) and PointF and back
 
 using System;
@@ -37,7 +39,9 @@ namespace LMDMono2D
                 if (PolarSyncWithDecart == false)
                 {
                     PolarSyncWithDecart = true;
-                    SyncWithPolar();
+                    float[] crds = GetDecartByPolar(l, p);
+                    x = crds[0];
+                    y = crds[1];
                 }
                 return x;
             }
@@ -60,7 +64,9 @@ namespace LMDMono2D
                 if (PolarSyncWithDecart == false)
                 {
                     PolarSyncWithDecart = true;
-                    SyncWithPolar();
+                    float[] crds = GetDecartByPolar(l, p);
+                    x = crds[0];
+                    y = crds[1];
                 }
                 return y;
             }
@@ -83,7 +89,9 @@ namespace LMDMono2D
                 if (DecartSyncWithPolar == false)
                 {
                     DecartSyncWithPolar = true;
-                    SyncWithDecart();
+                    float[] crds = GetPolarByDecart(x, y);
+                    l = crds[0];
+                    p = crds[1];
                 }
                 return l;
             }
@@ -106,7 +114,9 @@ namespace LMDMono2D
                 if (DecartSyncWithPolar == false)
                 {
                     DecartSyncWithPolar = true;
-                    SyncWithDecart();
+                    float[] crds = GetPolarByDecart(x, y);
+                    l = crds[0];
+                    p = crds[1];
                 }
                 return p;
             }
@@ -354,14 +364,14 @@ namespace LMDMono2D
         }
         #endregion
 
-        #region public static float[] GetPolarByDecart(float x, float y)
+        #region private static float[] GetPolarByDecart(float x, float y)
         /// <summary>
         /// Retrun linear array from L (length) and P (angle) by x and y
         /// </summary>
         /// <param name="x">X coordinate in decart</param>
         /// <param name="y">Y coordinate in decart</param>
         /// <returns></returns>
-        public static float[] GetPolarByDecart(float x, float y)
+        private static float[] GetPolarByDecart(float x, float y)
         {
             float l = (float)System.Math.Sqrt(x * x + y * y);
             float p = 0f;
@@ -376,40 +386,18 @@ namespace LMDMono2D
             return new float[] { l, p };
         }
         #endregion
-        #region public static float[] GetDecartByPolar(float l, float p)
+        #region private static float[] GetDecartByPolar(float l, float p)
         /// <summary>
         /// Returns linear array from X and Y by polar
         /// </summary>
         /// <param name="l">length</param>
         /// <param name="p">angle</param>
         /// <returns></returns>
-        public static float[] GetDecartByPolar(float l, float p)
+        private static float[] GetDecartByPolar(float l, float p)
         {
             float x = (float)System.Math.Cos(p) * l;
             float y = (float)System.Math.Sin(p) * l;
             return new float[] { x, y };
-        }
-        #endregion
-
-        #region private void SyncWithDecart()
-        /// <summary>
-        /// Convert decart coordinates to polar from this point
-        /// </summary>
-        private void SyncWithDecart()
-        {
-            l = (float)System.Math.Sqrt(x * x + y * y);
-            if (l == 0) { p = 0f; return; }
-            p = (float)System.Math.Acos(x / l) * (y < 0 ? -1f : 1f);
-        }
-        #endregion
-        #region private void SyncWithPolar()
-        /// <summary>
-        /// Convert polar coordinates to decart from this point
-        /// </summary>
-        private void SyncWithPolar()
-        {
-            x = (float)System.Math.Cos(p) * l;
-            y = (float)System.Math.Sin(p) * l;
         }
         #endregion
     }
@@ -527,22 +515,14 @@ namespace LMDMono2D
         /// <returns></returns>
         public static Dot StraightsIntersect(Dot A, Dot B, Dot C, Dot D)
         {
-            float a = A.Y - B.Y;
-            float b = B.X - A.X;
-            float c = A.X * B.Y - B.X * A.Y;
+            float xo = A.X, yo = A.Y;
+            float p = B.X - A.X, q = B.Y - A.Y;
+            float x1 = C.X, y1 = C.Y;
+            float p1 = D.X - C.X, q1 = D.Y - C.Y;
+            float x = (xo * q * p1 - x1 * q1 * p - yo * p * p1 + y1 * p * p1) / (q * p1 - q1 * p);
+            float y = (yo * p * q1 - y1 * p1 * q - xo * q * q1 + x1 * q * q1) / (p * q1 - p1 * q);
 
-            float d = C.Y - D.Y;
-            float e = D.X - C.X;
-            float f = C.X * D.Y - D.X * C.Y;
-
-            if (a != 0 && a * e - d * b != 0)
-            {
-                float y = (d * c - f * a) / (a * e - d * b);
-                float x = (-c - b * y) / a;
-
-                return new Dot(x, y);
-            }
-            return new Dot(0f, 0f);
+            return new Dot(x, y);
         }
         #endregion
 
@@ -699,7 +679,7 @@ namespace LMDMono2D
             return (v1 * v2 <= 0) && (v3 * v4 <= 0);
         }
         #endregion
-        #region public static Dot LineIntersect(Dot A, Dot B, Dot C, Dot D)
+        #region public static Dot LinesIntersect(Dot A, Dot B, Dot C, Dot D)
         public static Dot LinesIntersect(Dot A, Dot B, Dot C, Dot D)
         {
             Dot E = new Dot(System.Math.Min(A.X, B.X), System.Math.Min(A.Y, B.Y));
@@ -707,7 +687,7 @@ namespace LMDMono2D
             Dot G = new Dot(System.Math.Min(C.X, D.X), System.Math.Min(C.Y, D.Y));
             Dot H = new Dot(System.Math.Max(C.X, D.X), System.Math.Max(C.Y, D.Y));
             Dot X = StraightsIntersect(A, B, C, D);
-            if (X.X >= E.X && X.Y >= E.Y && X.X <= F.X && X.Y <= F.Y && X.X >= G.X && X.Y >= G.Y && X.X <= H.X && X.Y <= H.Y)
+            if (X != null && X.X >= E.X && X.Y >= E.Y && X.X <= F.X && X.Y <= F.Y && X.X >= G.X && X.Y >= G.Y && X.X <= H.X && X.Y <= H.Y)
             {
                 return X;
             }
@@ -730,24 +710,7 @@ namespace LMDMono2D
             if (ADist < BDist) { return A; }
             return B;
         }
-        #endregion
-
-        // I delete it later... don't use, please.
-        #region public static Dot[] GetLineByPoints(Dot A, Dot B, float mult = float.MaxValue)
-        /// <summary>
-        /// Returns 2 dots which is max line point.
-        /// </summary>
-        /// <param name="A"></param>
-        /// <param name="B"></param>
-        /// <returns></returns>
-        public static Dot[] GetLineByPoints(Dot A, Dot B, float mult = 1E+6f)
-        {
-            Dot C = A - Dot.GetUnitVector(B - A) * mult;
-            Dot D = B + Dot.GetUnitVector(B - A) * mult;
-            return new Dot[] { C, D };
-        }
-        #endregion
-
+        #endregion                                                            
         #region public static Dot DotClosestSegments(Dot[] ds, Dot D)
         /// <summary>
         /// Find maximum closestest dot who is line dot from array
@@ -759,7 +722,7 @@ namespace LMDMono2D
         {
             if (ds.Length >= 2)
             {
-                Dot X = DotMath.DotClosestSegment(ds[ds.Length - 1], ds[0], D);
+                Dot X = DotMath.DotClosestSegment(ds[0], ds[1], D);
                 float minDist = DotMath.Distance(D, X);
                 for (int i = 0; i < ds.Length - 1; i++)
                 {
@@ -774,6 +737,24 @@ namespace LMDMono2D
                 return X;
             }
             return null;
+        }
+        #endregion
+        #region public static Dot DotClosestPolygon(Dot[] ds, Dot D)
+        /// <summary>
+        /// Find maximum closestest dot who is line dot from array
+        /// </summary>
+        /// <param name="ds">Array of dots</param>
+        /// <param name="D">You dot</param>
+        /// <returns></returns>
+        public static Dot DotClosestPolygon(Dot[] ds, Dot D)
+        {
+            Dot[] ds2 = new Dot[ds.Length + 1];
+            for (int i = 0; i < ds.Length; i++)
+            {
+                ds2[i] = ds[i];
+            }
+            ds2[ds2.Length - 1] = ds2[0];
+            return DotClosestSegments(ds2, D);
         }
         #endregion
     }

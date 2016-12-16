@@ -5,7 +5,7 @@
 // https://vk.com/jkulvich
 // https://twitter.com/jkulvich
 
-// Version 1.1 Release
+// Version 1.2 Release-post
 
 #define SystemDrawing_Compatibility // allow implicit converting to Point (with round) and PointF and back
 
@@ -39,7 +39,7 @@ namespace LMDMono2D
                 if (PolarSyncWithDecart == false)
                 {
                     PolarSyncWithDecart = true;
-                    float[] crds = GetDecartByPolar(l, p);
+                    float[] crds = GetDecartByPolar(r, a);
                     x = crds[0];
                     y = crds[1];
                 }
@@ -64,7 +64,7 @@ namespace LMDMono2D
                 if (PolarSyncWithDecart == false)
                 {
                     PolarSyncWithDecart = true;
-                    float[] crds = GetDecartByPolar(l, p);
+                    float[] crds = GetDecartByPolar(r, a);
                     x = crds[0];
                     y = crds[1];
                 }
@@ -77,12 +77,12 @@ namespace LMDMono2D
             }
         }
         #endregion
-        #region get/set float L
-        private float l = 0f;
+        #region get/set float R
+        private float r = 0f;
         /// <summary>
-        /// The L (length\distance) coordinate from polar
+        /// The R (length\distance\radius) coordinate from polar
         /// </summary>
-        public float L
+        public float R
         {
             get
             {
@@ -90,24 +90,24 @@ namespace LMDMono2D
                 {
                     DecartSyncWithPolar = true;
                     float[] crds = GetPolarByDecart(x, y);
-                    l = crds[0];
-                    p = crds[1];
+                    r = crds[0];
+                    a = crds[1];
                 }
-                return l;
+                return r;
             }
             set
             {
-                l = value;
+                r = value;
                 PolarSyncWithDecart = false;
             }
         }
         #endregion
-        #region get/set float P
-        private float p = 0f;
+        #region get/set float A
+        private float a = 0f;
         /// <summary>
-        /// The P (angle) coordinate from polar
+        /// The A (angle) coordinate from polar
         /// </summary>
-        public float P
+        public float A
         {
             get
             {
@@ -115,14 +115,14 @@ namespace LMDMono2D
                 {
                     DecartSyncWithPolar = true;
                     float[] crds = GetPolarByDecart(x, y);
-                    l = crds[0];
-                    p = crds[1];
+                    r = crds[0];
+                    a = crds[1];
                 }
-                return p;
+                return a;
             }
             set
             {
-                p = value;
+                a = value;
                 PolarSyncWithDecart = false;
             }
         }
@@ -133,17 +133,17 @@ namespace LMDMono2D
         /// <summary>
         /// Initialize new dot and set coordinates from it (optional)
         /// </summary>
-        /// <param name="x">X coordinate in decart or L in polar</param>
-        /// <param name="y">Y coordinate in decart or P in polar</param>
+        /// <param name="x">X coordinate in decart or R in polar</param>
+        /// <param name="y">Y coordinate in decart or A in polar</param>
         /// <param name="IsPolar">Set coordinate how polar?</param>
         public Dot(float x = 0, float y = 0, bool IsPolar = false)
         {
             if (IsPolar == true)
             {
-                this.L = x;
-                this.P = y;
-                return;
+                this.R = x;
+                this.A = y;
                 PolarSyncWithDecart = false;
+                return;
             }
             this.X = x;
             this.Y = y;
@@ -171,7 +171,7 @@ namespace LMDMono2D
         {
             if (polar == true)
             {
-                return "Dot(" + L.ToString() + ", " + P.ToString() + ")";
+                return "Dot(" + R.ToString() + ", " + A.ToString() + ")";
             }
             return "Dot(" + X.ToString() + ", " + Y.ToString() + ")";
         }
@@ -386,17 +386,17 @@ namespace LMDMono2D
             return new float[] { l, p };
         }
         #endregion
-        #region private static float[] GetDecartByPolar(float l, float p)
+        #region private static float[] GetDecartByPolar(float r, float a)
         /// <summary>
         /// Returns linear array from X and Y by polar
         /// </summary>
-        /// <param name="l">length</param>
-        /// <param name="p">angle</param>
+        /// <param name="r">length</param>
+        /// <param name="a">angle</param>
         /// <returns></returns>
-        private static float[] GetDecartByPolar(float l, float p)
+        private static float[] GetDecartByPolar(float r, float a)
         {
-            float x = (float)System.Math.Cos(p) * l;
-            float y = (float)System.Math.Sin(p) * l;
+            float x = (float)System.Math.Cos(a) * r;
+            float y = (float)System.Math.Sin(a) * r;
             return new float[] { x, y };
         }
         #endregion
@@ -405,6 +405,8 @@ namespace LMDMono2D
     #region public class DotMath
     public static class DotMath
     {
+        // 1.1 RELEASE
+
         #region public static float Distance(Dot d1, Dot d2)
         /// <summary>
         /// Returns the distance between two points
@@ -519,8 +521,14 @@ namespace LMDMono2D
             float p = B.X - A.X, q = B.Y - A.Y;
             float x1 = C.X, y1 = C.Y;
             float p1 = D.X - C.X, q1 = D.Y - C.Y;
-            float x = (xo * q * p1 - x1 * q1 * p - yo * p * p1 + y1 * p * p1) / (q * p1 - q1 * p);
-            float y = (yo * p * q1 - y1 * p1 * q - xo * q * q1 + x1 * q * q1) / (p * q1 - p1 * q);
+            float xb = q * p1 - q1 * p;
+            float yb = p * q1 - p1 * q;
+
+            if (xb == 0) { xb = 1E-5f; } // added in 1.2
+            if (yb == 0) { yb = 1E-5f; } // added in 1.2
+
+            float x = (xo * q * p1 - x1 * q1 * p - yo * p * p1 + y1 * p * p1) / xb;
+            float y = (yo * p * q1 - y1 * p1 * q - xo * q * q1 + x1 * q * q1) / yb;
 
             return new Dot(x, y);
         }
@@ -559,23 +567,23 @@ namespace LMDMono2D
             for (int i = 0; i < ds.Length; i++)
             {
                 nds[i] = new Dot();
-                nds[i].L = ds[i].L;
-                nds[i].P = ds[i].P + p;
+                nds[i].R = ds[i].R;
+                nds[i].A = ds[i].A + p;
             }
             return nds;
         }
         #endregion
-        #region public static Dot[] RotateFrom(Dot[] ds, Dot center, float p)
+        #region public static Dot[] RotateFrom(Dot[] ds, Dot center, float a)
         /// <summary>
         /// Rotate all dots in array from center
         /// </summary>
         /// <param name="ds">Array of dots</param>
         /// <param name="center">All dots will rotated use this point how center</param>
-        /// <param name="p">Rotate angle</param>
+        /// <param name="a">Rotate angle</param>
         /// <returns></returns>
-        public static Dot[] RotateFrom(Dot[] ds, Dot center, float p)
+        public static Dot[] RotateFrom(Dot[] ds, Dot center, float a)
         {
-            return Translate(Rotate(Translate(ds, -center), p), center);
+            return Translate(Rotate(Translate(ds, -center), a), center);
         }
         #endregion
         #region public static Dot PolygonCenter(Dot[] ds)
@@ -609,7 +617,7 @@ namespace LMDMono2D
             Dot[] nds = new Dot[ds.Length];
             for (int i = 0; i < ds.Length; i++)
             {
-                nds[i] = new Dot(ds[i].L * s, ds[i].P, true);
+                nds[i] = new Dot(ds[i].R * s, ds[i].A, true);
             }
             return nds;
         }
@@ -655,7 +663,7 @@ namespace LMDMono2D
         public static Dot DotStraightProjection(Dot A, Dot B, Dot C)
         {
             Dot Z = Dot.GetUnitVector(B - A);
-            Z.P += (float)System.Math.PI / 2f;
+            Z.A += (float)System.Math.PI / 2f;
             Z = Z + C;
             return StraightsIntersect(A, B, C, Z);
         }
@@ -755,6 +763,15 @@ namespace LMDMono2D
             }
             ds2[ds2.Length - 1] = ds2[0];
             return DotClosestSegments(ds2, D);
+        }
+        #endregion
+
+        // 1.2 RELEASE-POST
+
+        #region public static float Scalar(Dot A, Dot B)
+        public static float Scalar(Dot A, Dot B)
+        {
+            return Distance(new Dot(), A) * Distance(new Dot(), B) * StraightsAngle(new Dot(), A, new Dot(), B);
         }
         #endregion
     }

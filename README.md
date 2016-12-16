@@ -4,6 +4,6 @@ well, you can see all documentation in <b>Documentation.pdf</b> file.
 If you have some problesm or new ideas, write about this <a href="https://goo.gl/forms/thy9Jw4oY0lLgFJA3">HERE</a>!
 
 # LMDMono2D.DotMath
-Математическая библиотека для проекта LMDMono2D.
-Всю документацию с примерами вы можете увидеть в фале <b>Documentation.pdf</b>.
-Если вы обнаружили ошибки или у вас есть идеи для проекта, напишите <a href="https://goo.gl/forms/thy9Jw4oY0lLgFJA3">ЗДЕСЬ</a>!
+РњР°С‚РµРјР°С‚РёС‡РµСЃРєР°СЏ Р±РёР±Р»РёРѕС‚РµРєР° РґР»СЏ РїСЂРѕРµРєС‚Р° LMDMono2D.
+Р’СЃСЋ РґРѕРєСѓРјРµРЅС‚Р°С†РёСЋ СЃ РїСЂРёРјРµСЂР°РјРё РІС‹ РјРѕР¶РµС‚Рµ СѓРІРёРґРµС‚СЊ РІ С„Р°Р»Рµ <b>Documentation.pdf</b>.
+Р•СЃР»Рё РІС‹ РѕР±РЅР°СЂСѓР¶РёР»Рё РѕС€РёР±РєРё РёР»Рё Сѓ РІР°СЃ РµСЃС‚СЊ РёРґРµРё РґР»СЏ РїСЂРѕРµРєС‚Р°, РЅР°РїРёС€РёС‚Рµ <a href="https://goo.gl/forms/thy9Jw4oY0lLgFJA3">Р—Р”Р•РЎР¬</a>!
